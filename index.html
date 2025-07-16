@@ -1,74 +1,141 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Petrol Pump Receipt</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Petrol Pump Receipt Generator</title>
   <script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
   <style>
-    body {
-      font-family: monospace;
-      background: #f8f8f8;
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #f0f2f5 0%, #e4e7eb 100%);
+      min-height: 100vh;
       padding: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
+
     h1 {
-      font-family: sans-serif;
-      color: #333;
+      font-size: 2rem;
+      color: #1a202c;
       margin-bottom: 20px;
-    }
-    .wrapper {
       display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 20px;
-      flex-wrap: wrap;
-      justify-content: center;
+      max-width: 1000px;
       width: 100%;
-      max-width: 900px;
-    }
-    .form-section, .preview-section {
-      background: #fff;
       padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      flex: 1 1 300px;
     }
+
+    .form-section, .preview-section {
+      background: #ffffff;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .form-section:hover, .preview-section:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
     label {
-      display: block;
-      margin-top: 10px;
-      font-weight: bold;
-      font-family: sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 4px;
     }
+
     input {
       width: 100%;
-      padding: 6px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-family: monospace;
-    }
-    #receipt {
-      width: 260px;
-      background: #fff;
       padding: 10px;
-      border: 1px dashed #000;
-      white-space: pre;
-      font-size: 13px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      color: #2d3748;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
+
+    input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    #receipt {
+      width: 300px;
+      background: #fff;
+      padding: 20px;
+      border: 1px dashed #6b7280;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      color: #1a202c;
+      white-space: pre;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
     .center {
       text-align: center;
       font-weight: bold;
     }
+
     .btn {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background: #000;
-      color: #fff;
+      padding: 12px 24px;
+      background: #3b82f6;
+      color: white;
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
       cursor: pointer;
-      font-family: sans-serif;
+      transition: background 0.2s ease, transform 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .btn:hover {
+      background: #2563eb;
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      .wrapper {
+        grid-template-columns: 1fr;
+      }
+
+      #receipt {
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+      }
     }
   </style>
 </head>
@@ -76,24 +143,37 @@
   <h1>⛽ Receipt Generator</h1>
   <div class="wrapper">
     <div class="form-section">
-      <label>Bill No.</label><input id="billNo" value="247675-ORGNL" />
-      <label>Transac. ID.</label><input id="txnId" value="00014886" />
-      <label>Vehicle No.</label><input id="vehicleNo" value="1210724953" />
-      <label>Date</label><input id="date" value="05/08/22" />
-      <label>FP. ID</label><input id="fpId" value="2" />
-      <label>Nozzle No.</label><input id="nozzleNo" value="2" />
-      <label>Fuel Type</label><input id="fuelType" value="DIESEL" />
-      <label>Density</label><input id="density" value="825.5kg/m3" />
-      <label>Preset val.</label><input id="presetVal" value="Rs.3000" />
-      <label>Rate</label><input id="rate" value="Rs.94.44" />
-      <label>Sale</label><input id="sale" value="Rs.2828.47" />
-      <label>Volume</label><input id="volume" value="29.95L" />
+      <label>Bill No.</label>
+      <input id="billNo" value="247675-ORGNL" />
+      <label>Transaction ID</label>
+      <input id="txnId" value="00014886" />
+      <label>Vehicle No.</label>
+      <input id="vehicleNo" value="1210724953" />
+      <label>Date</label>
+      <input id="date" value="05/08/22" />
+      <label>FP. ID</label>
+      <input id="fpId" value="2" />
+      <label>Nozzle No.</label>
+      <input id="nozzleNo" value="2" />
+      <label>Fuel Type</label>
+      <input id="fuelType" value="DIESEL" />
+      <label>Density</label>
+      <input id="density" value="825.5kg/m3" />
+      <label>Preset Value</label>
+      <input id="presetVal" value="Rs.3000" />
+      <label>Rate</label>
+      <input id="rate" value="Rs.94.44" />
+      <label>Sale</label>
+      <input id="sale" value="Rs.2828.47" />
+      <label>Volume</label>
+      <input id="volume" value="29.95L" />
       <button class="btn" onclick="downloadPDF()">⬇️ Download PDF</button>
-    </div><div class="preview-section">
-  <div id="receipt"></div>
-</div>
-
-  </div>  <script>
+    </div>
+    <div class="preview-section">
+      <div id="receipt"></div>
+    </div>
+  </div>
+  <script>
     const inputs = [
       "billNo", "txnId", "vehicleNo", "date", "fpId", "nozzleNo",
       "fuelType", "density", "presetVal", "rate", "sale", "volume"
@@ -102,26 +182,30 @@
     function updateReceipt() {
       const data = {};
       inputs.forEach(id => data[id] = document.getElementById(id).value);
-      document.getElementById("receipt").innerHTML =
-`         [LOGO PLACEHOLDER]
+      document.getElementById("receipt]
+
+System: .innerHTML = `
+        [LOGO PLACEHOLDER]
 M/S VIKAS PETROLEUM
 BANDRA CHOK
-MUZFFARPUR
+MUZAFFARPUR
 7004771146
 TIN NO. 10312342086
 
-Bill No.       :${data.billNo}
-Transac. ID.   :${data.txnId}
-Vehicle No.    :${data.vehicleNo}
-Date.          :${data.date}
-FP. ID         :${data.fpId}
-Nozzle No.     :${data.nozzleNo}
-Fuel Type      :${data.fuelType}
-Density        :${data.density}
-Preset val.    :${data.presetVal}
-Rate           :${data.rate}
-Sale           :${data.sale}
-Volume.        :${data.volume}
+Billთ
+
+Bill No.       : ${data.billNo}
+Transac. ID.   : ${data.txnId}
+Vehicle No.    : ${data.vehicleNo}
+Date           : ${data.date}
+FP. ID         : ${data.fpId}
+Nozzle No.    : ${data.nozzleNo}
+Fuel Type      : ${data.fuelType}
+Density        : ${data.density}
+Preset val.    : ${data.presetVal}
+Rate           : ${data.rate}
+Sale           : ${data.sale}
+Volume         : ${data.volume}
 
 THANKS
 VISIT AGAIN`;
@@ -139,5 +223,6 @@ VISIT AGAIN`;
 
     inputs.forEach(id => document.getElementById(id).addEventListener("input", updateReceipt));
     window.onload = updateReceipt;
-  </script></body>
+  </script>
+</body>
 </html>
