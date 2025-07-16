@@ -1,48 +1,87 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Petrol Pump Receipt Dashboard</title>
+  <meta charset="UTF-8" />
+  <title>Fuel Receipt Dashboard</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body {
+    * {
       margin: 0;
-      font-family: monospace;
-      background: #f2f2f2;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+    body {
+      background: #f3f4f6;
+    }
+    header {
       display: flex;
-      height: 100vh;
+      align-items: center;
+      padding: 15px 25px;
+      background: #111827;
+      color: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    header img {
+      height: 30px;
+      margin-right: 15px;
+    }
+    main {
+      display: flex;
+      height: calc(100vh - 60px);
     }
     .left, .right {
-      padding: 20px;
+      flex: 1;
+      padding: 25px;
       overflow-y: auto;
     }
     .left {
-      width: 50%;
-      background: #fff;
-      border-right: 1px solid #ccc;
+      background: white;
+      border-right: 1px solid #e5e7eb;
     }
     .right {
-      width: 50%;
-      background: #fff;
+      background: #f9fafb;
+    }
+    h2 {
+      margin-bottom: 15px;
+      font-size: 22px;
+      color: #111827;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 600;
+      color: #374151;
     }
     input, select {
       width: 100%;
-      padding: 8px;
-      margin: 10px 0;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #d1d5db;
+      border-radius: 5px;
       font-size: 14px;
+      background: #fff;
     }
     button {
-      padding: 10px;
-      font-size: 16px;
-      margin-top: 20px;
+      margin-top: 30px;
       width: 100%;
+      background: #2563eb;
+      color: white;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
     }
-    .receipt {
-      width: 240px;
-      background: #fff;
-      padding: 10px;
+    .receipt-box {
+      width: 260px;
+      margin-top: 20px;
+      padding: 15px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      font-family: monospace;
       font-size: 11px;
-      line-height: 1.4;
-      border: 1px dashed #000;
     }
     .center {
       text-align: center;
@@ -52,67 +91,70 @@
       border-top: 1px dashed #000;
       margin: 10px 0;
     }
-    label {
-      font-weight: bold;
-      font-size: 13px;
-    }
   </style>
 </head>
 <body>
 
-<div class="left">
-  <h2>Receipt Entry</h2>
-  <label>Invoice No</label>
-  <input id="invoice" oninput="updateReceipt()" />
-  <label>Date</label>
-  <input id="date" oninput="updateReceipt()" />
-  <label>Time</label>
-  <input id="time" oninput="updateReceipt()" />
-  <label>Nozzle No</label>
-  <input id="nozzle" oninput="updateReceipt()" />
-  <label>Vehicle No</label>
-  <input id="vehicle" oninput="updateReceipt()" />
-  <label>Product</label>
-  <select id="product" onchange="updateReceipt()">
-    <option>PETROL</option>
-    <option>DIESEL</option>
-  </select>
-  <label>Quantity (Ltr)</label>
-  <input id="qty" type="number" oninput="updateReceipt()" />
-  <label>Rate (₹/Ltr)</label>
-  <input id="rate" type="number" oninput="updateReceipt()" />
-  <label>Payment Mode</label>
-  <input id="mode" oninput="updateReceipt()" />
-  <label>Operator Name</label>
-  <input id="operator" oninput="updateReceipt()" />
-  <button onclick="downloadPDF()">💾 Download PDF</button>
-</div>
+<header>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Bharat_Petroleum_Logo.svg/1200px-Bharat_Petroleum_Logo.svg.png" alt="Logo" width="30">
+  <h1>Fuel Receipt Dashboard</h1>
+</header>
 
-<div class="right">
-  <h2>Live Receipt Preview</h2>
-  <div class="receipt" id="receiptPreview">
-    <div class="center">
-      <strong>BHARAT PETROLEUM</strong><br/>
-      OM SAI SERVICE STATION<br/>
-      NH-8, NEAR TOLL PLAZA, AJMER<br/>
-      GSTIN: 08ABCDE1234F1Z5
-    </div>
-    <hr>
-    Invoice : <span id="r_invoice"></span><br/>
-    Date    : <span id="r_date"></span><br/>
-    Time    : <span id="r_time"></span><br/>
-    Nozzle  : <span id="r_nozzle"></span><br/>
-    Vehicle : <span id="r_vehicle"></span><br/>
-    Product : <span id="r_product"></span><br/>
-    Qty     : <span id="r_qty"></span> Ltr<br/>
-    Rate    : ₹<span id="r_rate"></span><br/>
-    Amount  : ₹<span id="r_amount"></span><br/>
-    Mode    : <span id="r_mode"></span><br/>
-    Operator: <span id="r_operator"></span><br/>
-    <hr>
-    <div class="center">Thank you! Visit Again.</div>
+<main>
+  <div class="left">
+    <h2>Receipt Entry</h2>
+    <label>Invoice No</label>
+    <input id="invoice" oninput="updateReceipt()">
+    <label>Date</label>
+    <input id="date" oninput="updateReceipt()">
+    <label>Time</label>
+    <input id="time" oninput="updateReceipt()">
+    <label>Nozzle No</label>
+    <input id="nozzle" oninput="updateReceipt()">
+    <label>Vehicle No</label>
+    <input id="vehicle" oninput="updateReceipt()">
+    <label>Product</label>
+    <select id="product" onchange="updateReceipt()">
+      <option>PETROL</option>
+      <option>DIESEL</option>
+    </select>
+    <label>Quantity (Ltr)</label>
+    <input id="qty" type="number" step="0.01" oninput="updateReceipt()">
+    <label>Rate (₹/Ltr)</label>
+    <input id="rate" type="number" step="0.01" oninput="updateReceipt()">
+    <label>Payment Mode</label>
+    <input id="mode" oninput="updateReceipt()">
+    <label>Operator Name</label>
+    <input id="operator" oninput="updateReceipt()">
+    <button onclick="downloadPDF()">💾 Download PDF (58mm)</button>
   </div>
-</div>
+
+  <div class="right">
+    <h2>Live Preview</h2>
+    <div class="receipt-box" id="receiptPreview">
+      <div class="center">
+        <strong>BHARAT PETROLEUM</strong><br/>
+        OM SAI SERVICE STATION<br/>
+        NH-8, NEAR TOLL PLAZA, AJMER<br/>
+        GSTIN: 08ABCDE1234F1Z5
+      </div>
+      <hr>
+      Invoice : <span id="r_invoice"></span><br/>
+      Date    : <span id="r_date"></span><br/>
+      Time    : <span id="r_time"></span><br/>
+      Nozzle  : <span id="r_nozzle"></span><br/>
+      Vehicle : <span id="r_vehicle"></span><br/>
+      Product : <span id="r_product"></span><br/>
+      Qty     : <span id="r_qty"></span> Ltr<br/>
+      Rate    : ₹<span id="r_rate"></span><br/>
+      Amount  : ₹<span id="r_amount"></span><br/>
+      Mode    : <span id="r_mode"></span><br/>
+      Operator: <span id="r_operator"></span><br/>
+      <hr>
+      <div class="center">Thank you! Visit Again.</div>
+    </div>
+  </div>
+</main>
 
 <script>
 function updateReceipt() {
@@ -136,7 +178,7 @@ function updateReceipt() {
   set('r_operator', get('operator'));
 }
 
-async function downloadPDF() {
+function downloadPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({
     orientation: "portrait",
@@ -154,4 +196,3 @@ async function downloadPDF() {
 
 </body>
 </html>
-
