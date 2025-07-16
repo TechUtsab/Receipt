@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Petrol Pump Receipt Generator</title>
   <script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -181,10 +182,11 @@
 
     function updateReceipt() {
       const data = {};
-      inputs.forEach(id => data[id] = document.getElementById(id).value);
-      document.getElementById("receipt]
-
-System: .innerHTML = `
+      inputs.forEach(id => {
+        const element = document.getElementById(id);
+        data[id] = element ? element.value : '';
+      });
+      document.getElementById("receipt").innerHTML = `
         [LOGO PLACEHOLDER]
 M/S VIKAS PETROLEUM
 BANDRA CHOK
@@ -192,14 +194,12 @@ MUZAFFARPUR
 7004771146
 TIN NO. 10312342086
 
-Billთ
-
 Bill No.       : ${data.billNo}
 Transac. ID.   : ${data.txnId}
 Vehicle No.    : ${data.vehicleNo}
 Date           : ${data.date}
 FP. ID         : ${data.fpId}
-Nozzle No.    : ${data.nozzleNo}
+Nozzle No.     : ${data.nozzleNo}
 Fuel Type      : ${data.fuelType}
 Density        : ${data.density}
 Preset val.    : ${data.presetVal}
@@ -221,7 +221,12 @@ VISIT AGAIN`;
       }).from(receipt).save();
     }
 
-    inputs.forEach(id => document.getElementById(id).addEventListener("input", updateReceipt));
+    inputs.forEach(id => {
+      const element = document.getElementById(id);
+      if (element) {
+        element.addEventListener("input", updateReceipt);
+      }
+    });
     window.onload = updateReceipt;
   </script>
 </body>
