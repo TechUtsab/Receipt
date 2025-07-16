@@ -2,200 +2,205 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Vikas Petroleum Receipt</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Petrol Pump Receipt Generator</title>
+  <script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
   <style>
-    * {
-      margin: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
-    }
     body {
-      background: #f9fafb;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 0;
     }
     header {
-      background: #111827;
+      background: #1f2937;
       color: white;
-      padding: 15px 20px;
+      padding: 1rem;
       text-align: center;
-    }
-    header h1 {
+      font-weight: bold;
       font-size: 20px;
-      font-weight: 600;
     }
-    main {
+    .container {
       display: flex;
       flex-wrap: wrap;
-      padding: 20px;
-      gap: 20px;
-      justify-content: center;
+      padding: 1rem;
+      gap: 1rem;
     }
-    .card {
+    .form-section, .preview-section {
       background: white;
       border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-      flex: 1;
-      min-width: 300px;
-      max-width: 400px;
+      padding: 1rem;
+      flex: 1 1 300px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
     label {
-      font-weight: 600;
-      font-size: 14px;
-      color: #374151;
       display: block;
-      margin-top: 15px;
-    }
-    input, select {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border: 1px solid #d1d5db;
-      border-radius: 5px;
+      margin-top: 0.8rem;
+      font-weight: bold;
       font-size: 14px;
     }
-    button {
+    input {
       width: 100%;
-      padding: 12px;
-      background: #2563eb;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      margin-top: 25px;
-      font-size: 16px;
-      cursor: pointer;
+      padding: 6px 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
     }
-    .receipt-box {
-      background: white;
-      padding: 15px;
+    #receipt {
       font-family: monospace;
-      font-size: 11px;
-      width: 100%;
-      max-width: 260px;
-      margin: 0 auto;
-      border-radius: 8px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      font-size: 12px;
+      width: 260px;
+      background: white;
+      padding: 10px;
+      white-space: pre;
+      border: 1px solid #ddd;
+      margin-top: 1rem;
     }
     .center {
       text-align: center;
+      font-weight: bold;
     }
-    hr {
+    .btn {
+      background: #1f2937;
+      color: white;
       border: none;
-      border-top: 1px dashed #000;
-      margin: 10px 0;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 1rem;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
+  <header>
+    ⛽ Petrol Pump Receipt Generator
+  </header>
 
-<header>
-  <h1>Vikas Petroleum - Receipt Generator</h1>
-</header>
+  <div class="container">
+    <div class="form-section">
+      <label>Bill No.</label>
+      <input type="text" id="billNo" value="247675-ORGNL"/>
 
-<main>
-  <div class="card">
-    <label>Bill No.</label>
-    <input id="invoice" value="247675-ORGNL" oninput="updateReceipt()" />
-    <label>Date</label>
-    <input id="date" value="05/08/22" oninput="updateReceipt()" />
-    <label>Time</label>
-    <input id="time" value="10:32 AM" oninput="updateReceipt()" />
-    <label>Transaction ID</label>
-    <input id="operator" value="00014886" oninput="updateReceipt()" />
-    <label>Vehicle No.</label>
-    <input id="vehicle" value="1210724953" oninput="updateReceipt()" />
-    <label>Fuel Type</label>
-    <select id="product" onchange="updateReceipt()">
-      <option>DIESEL</option>
-      <option>PETROL</option>
-    </select>
-    <label>Density</label>
-    <input id="density" value="825.5 kg/m3" oninput="updateReceipt()" />
-    <label>Nozzle No.</label>
-    <input id="nozzle" value="2" oninput="updateReceipt()" />
-    <label>Preset Value (₹)</label>
-    <input id="mode" value="3000" oninput="updateReceipt()" />
-    <label>Rate (₹/L)</label>
-    <input id="rate" value="94.44" oninput="updateReceipt()" />
-    <label>Volume (L)</label>
-    <input id="qty" value="29.95" oninput="updateReceipt()" />
-    <button onclick="downloadPDF()">Download PDF</button>
-  </div>
+      <label>Transaction ID</label>
+      <input type="text" id="txnId" value="00014886"/>
 
-  <div class="card">
-    <div class="receipt-box" id="receiptPreview">
-      <div class="center">
-        <strong>M/S VIKAS PETROLEUM</strong><br/>
-        BANDRA CHOK<br/>
-        MUZFFARPUR<br/>
-        7004771146<br/>
-        TIN NO. 10312342086
+      <label>Vehicle No.</label>
+      <input type="text" id="vehicleNo" value="1210724953"/>
+
+      <label>Date</label>
+      <input type="text" id="date" value="05/08/22"/>
+
+      <label>FP. ID</label>
+      <input type="text" id="fpId" value="2"/>
+
+      <label>Nozzle No.</label>
+      <input type="text" id="nozzleNo" value="2"/>
+
+      <label>Fuel Type</label>
+      <input type="text" id="fuelType" value="DIESEL"/>
+
+      <label>Density</label>
+      <input type="text" id="density" value="825.5kg/m3"/>
+
+      <label>Preset Value</label>
+      <input type="text" id="presetVal" value="Rs.3000"/>
+
+      <label>Rate</label>
+      <input type="text" id="rate" value="Rs.94.44"/>
+
+      <label>Sale</label>
+      <input type="text" id="sale" value="Rs.2828.47"/>
+
+      <label>Volume</label>
+      <input type="text" id="volume" value="29.95L"/>
+
+      <button class="btn" onclick="downloadPDF()">⬇️ Download PDF</button>
+    </div>
+
+    <div class="preview-section">
+      <div id="receipt">
+        <div class="center">[LOGO]</div>
+        <div class="center">M/S VIKAS PETROLEUM</div>
+        <div class="center">BANDRA CHOK</div>
+        <div class="center">MUZFFARPUR</div>
+        <div class="center">7004771146</div>
+        <div class="center">TIN NO. 10312342086</div>
+
+        <br/>
+Bill No.       :247675-ORGNL  
+Transac. ID.   :00014886  
+Vehicle No.    :1210724953  
+Date.          :05/08/22  
+FP. ID         :2  
+Nozzle No.     :2  
+Fuel Type      :DIESEL  
+Density        :825.5kg/m3  
+Preset val.    :Rs.3000  
+Rate           :Rs.94.44  
+Sale           :Rs.2828.47  
+Volume.        :29.95L  
+
+        <br/>
+        <div class="center">THANKS</div>
+        <div class="center">VISIT AGAIN</div>
       </div>
-      <hr>
-      Bill No.   : <span id="r_invoice"></span><br/>
-      Transac. ID: <span id="r_operator"></span><br/>
-      Vehicle No.: <span id="r_vehicle"></span><br/>
-      Date       : <span id="r_date"></span><br/>
-      Time       : <span id="r_time"></span><br/>
-      FP. ID     : 2<br/>
-      Nozzle No. : <span id="r_nozzle"></span><br/>
-      Fuel Type  : <span id="r_product"></span><br/>
-      Density    : <span id="r_density"></span><br/>
-      Preset Val.: ₹<span id="r_mode"></span><br/>
-      Rate       : ₹<span id="r_rate"></span><br/>
-      Sale       : ₹<span id="r_amount"></span><br/>
-      Volume     : <span id="r_qty"></span> L
-      <hr>
-      <div class="center">THANKS<br/>VISIT AGAIN</div>
     </div>
   </div>
-</main>
 
-<script>
-function updateReceipt() {
-  const get = id => document.getElementById(id).value || '';
-  const set = (id, val) => document.getElementById(id).innerText = val;
+  <script>
+    const fields = [
+      "billNo", "txnId", "vehicleNo", "date", "fpId", "nozzleNo",
+      "fuelType", "density", "presetVal", "rate", "sale", "volume"
+    ];
 
-  const qty = parseFloat(get('qty')) || 0;
-  const rate = parseFloat(get('rate')) || 0;
-  const amount = (qty * rate).toFixed(2);
+    fields.forEach(id => {
+      document.getElementById(id).addEventListener("input", updateReceipt);
+    });
 
-  set('r_invoice', get('invoice'));
-  set('r_date', get('date'));
-  set('r_time', get('time'));
-  set('r_operator', get('operator'));
-  set('r_vehicle', get('vehicle'));
-  set('r_product', get('product'));
-  set('r_density', get('density'));
-  set('r_nozzle', get('nozzle'));
-  set('r_mode', get('mode'));
-  set('r_rate', rate.toFixed(2));
-  set('r_amount', amount);
-  set('r_qty', qty.toFixed(2));
-}
+    function updateReceipt() {
+      const data = {};
+      fields.forEach(id => {
+        data[id] = document.getElementById(id).value;
+      });
 
-window.onload = updateReceipt;
+      document.getElementById("receipt").innerHTML = `
+<div class="center">[LOGO]</div>
+<div class="center">M/S VIKAS PETROLEUM</div>
+<div class="center">BANDRA CHOK</div>
+<div class="center">MUZFFARPUR</div>
+<div class="center">7004771146</div>
+<div class="center">TIN NO. 10312342086</div>
 
-function downloadPDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({
-    orientation: "portrait",
-    unit: "mm",
-    format: [58, 140]
-  });
+<br/>
+Bill No.       :${data.billNo}  
+Transac. ID.   :${data.txnId}  
+Vehicle No.    :${data.vehicleNo}  
+Date.          :${data.date}  
+FP. ID         :${data.fpId}  
+Nozzle No.     :${data.nozzleNo}  
+Fuel Type      :${data.fuelType}  
+Density        :${data.density}  
+Preset val.    :${data.presetVal}  
+Rate           :${data.rate}  
+Sale           :${data.sale}  
+Volume.        :${data.volume}  
 
-  const content = document.getElementById("receiptPreview").innerText;
-  doc.setFont("Courier", "normal");
-  doc.setFontSize(8);
-  doc.text(content, 4, 10);
-  doc.save("vikas_receipt.pdf");
-}
-</script>
+<br/>
+<div class="center">THANKS</div>
+<div class="center">VISIT AGAIN</div>`;
+    }
 
+    function downloadPDF() {
+      const receipt = document.getElementById("receipt");
+      html2pdf().set({
+        margin: 0,
+        filename: 'receipt.pdf',
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: [58, 150], orientation: 'portrait' }
+      }).from(receipt).save();
+    }
+  </script>
 </body>
 </html>
