@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Fuel Receipt Dashboard</title>
+  <title>Vikas Petroleum Receipt</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -18,50 +18,32 @@
       flex-direction: column;
       min-height: 100vh;
     }
-
     header {
-      background: #1f2937;
+      background: #111827;
       color: white;
-      padding: 12px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 15px 20px;
+      text-align: center;
     }
-
-    header img {
-      height: 32px;
-      margin-right: 10px;
-    }
-
     header h1 {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 600;
     }
-
     main {
       display: flex;
-      flex: 1;
-      flex-direction: row;
+      flex-wrap: wrap;
       padding: 20px;
       gap: 20px;
+      justify-content: center;
     }
-
     .card {
       background: white;
       border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
       padding: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
       flex: 1;
       min-width: 300px;
+      max-width: 400px;
     }
-
-    h2 {
-      font-size: 18px;
-      margin-bottom: 20px;
-      color: #111827;
-    }
-
     label {
       font-weight: 600;
       font-size: 14px;
@@ -69,7 +51,6 @@
       display: block;
       margin-top: 15px;
     }
-
     input, select {
       width: 100%;
       padding: 10px;
@@ -78,7 +59,6 @@
       border-radius: 5px;
       font-size: 14px;
     }
-
     button {
       width: 100%;
       padding: 12px;
@@ -90,7 +70,6 @@
       font-size: 16px;
       cursor: pointer;
     }
-
     .receipt-box {
       background: white;
       padding: 15px;
@@ -102,85 +81,77 @@
       border-radius: 8px;
       box-shadow: 0 1px 4px rgba(0,0,0,0.1);
     }
-
     .center {
       text-align: center;
     }
-
     hr {
       border: none;
       border-top: 1px dashed #000;
       margin: 10px 0;
-    }
-
-    @media (max-width: 768px) {
-      main {
-        flex-direction: column;
-      }
     }
   </style>
 </head>
 <body>
 
 <header>
-  <div style="display: flex; align-items: center;">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Bharat_Petroleum_Logo.svg/1200px-Bharat_Petroleum_Logo.svg.png" alt="Logo">
-    <h1>Fuel Receipt Dashboard</h1>
-  </div>
+  <h1>Vikas Petroleum - Receipt Generator</h1>
 </header>
 
 <main>
   <div class="card">
-    <h2>Receipt Form</h2>
-    <label>Invoice No</label>
-    <input id="invoice" oninput="updateReceipt()">
+    <label>Bill No.</label>
+    <input id="invoice" value="247675-ORGNL" oninput="updateReceipt()" />
     <label>Date</label>
-    <input id="date" oninput="updateReceipt()">
+    <input id="date" value="05/08/22" oninput="updateReceipt()" />
     <label>Time</label>
-    <input id="time" oninput="updateReceipt()">
-    <label>Nozzle No</label>
-    <input id="nozzle" oninput="updateReceipt()">
-    <label>Vehicle No</label>
-    <input id="vehicle" oninput="updateReceipt()">
-    <label>Product</label>
+    <input id="time" value="10:32 AM" oninput="updateReceipt()" />
+    <label>Transaction ID</label>
+    <input id="operator" value="00014886" oninput="updateReceipt()" />
+    <label>Vehicle No.</label>
+    <input id="vehicle" value="1210724953" oninput="updateReceipt()" />
+    <label>Fuel Type</label>
     <select id="product" onchange="updateReceipt()">
-      <option>PETROL</option>
       <option>DIESEL</option>
+      <option>PETROL</option>
     </select>
-    <label>Quantity (Ltr)</label>
-    <input id="qty" type="number" step="0.01" oninput="updateReceipt()">
-    <label>Rate (₹/Ltr)</label>
-    <input id="rate" type="number" step="0.01" oninput="updateReceipt()">
-    <label>Payment Mode</label>
-    <input id="mode" oninput="updateReceipt()">
-    <label>Operator Name</label>
-    <input id="operator" oninput="updateReceipt()">
-    <button onclick="downloadPDF()">💾 Download PDF (58mm)</button>
+    <label>Density</label>
+    <input id="density" value="825.5 kg/m3" oninput="updateReceipt()" />
+    <label>Nozzle No.</label>
+    <input id="nozzle" value="2" oninput="updateReceipt()" />
+    <label>Preset Value (₹)</label>
+    <input id="mode" value="3000" oninput="updateReceipt()" />
+    <label>Rate (₹/L)</label>
+    <input id="rate" value="94.44" oninput="updateReceipt()" />
+    <label>Volume (L)</label>
+    <input id="qty" value="29.95" oninput="updateReceipt()" />
+    <button onclick="downloadPDF()">Download PDF</button>
   </div>
 
   <div class="card">
-    <h2>Live Receipt Preview</h2>
     <div class="receipt-box" id="receiptPreview">
       <div class="center">
-        <strong>BHARAT PETROLEUM</strong><br/>
-        OM SAI SERVICE STATION<br/>
-        NH-8, NEAR TOLL PLAZA, AJMER<br/>
-        GSTIN: 08ABCDE1234F1Z5
+        <strong>M/S VIKAS PETROLEUM</strong><br/>
+        BANDRA CHOK<br/>
+        MUZFFARPUR<br/>
+        7004771146<br/>
+        TIN NO. 10312342086
       </div>
       <hr>
-      Invoice : <span id="r_invoice"></span><br/>
-      Date    : <span id="r_date"></span><br/>
-      Time    : <span id="r_time"></span><br/>
-      Nozzle  : <span id="r_nozzle"></span><br/>
-      Vehicle : <span id="r_vehicle"></span><br/>
-      Product : <span id="r_product"></span><br/>
-      Qty     : <span id="r_qty"></span> Ltr<br/>
-      Rate    : ₹<span id="r_rate"></span><br/>
-      Amount  : ₹<span id="r_amount"></span><br/>
-      Mode    : <span id="r_mode"></span><br/>
-      Operator: <span id="r_operator"></span><br/>
+      Bill No.   : <span id="r_invoice"></span><br/>
+      Transac. ID: <span id="r_operator"></span><br/>
+      Vehicle No.: <span id="r_vehicle"></span><br/>
+      Date       : <span id="r_date"></span><br/>
+      Time       : <span id="r_time"></span><br/>
+      FP. ID     : 2<br/>
+      Nozzle No. : <span id="r_nozzle"></span><br/>
+      Fuel Type  : <span id="r_product"></span><br/>
+      Density    : <span id="r_density"></span><br/>
+      Preset Val.: ₹<span id="r_mode"></span><br/>
+      Rate       : ₹<span id="r_rate"></span><br/>
+      Sale       : ₹<span id="r_amount"></span><br/>
+      Volume     : <span id="r_qty"></span> L
       <hr>
-      <div class="center">Thank you! Visit Again.</div>
+      <div class="center">THANKS<br/>VISIT AGAIN</div>
     </div>
   </div>
 </main>
@@ -197,29 +168,32 @@ function updateReceipt() {
   set('r_invoice', get('invoice'));
   set('r_date', get('date'));
   set('r_time', get('time'));
-  set('r_nozzle', get('nozzle'));
+  set('r_operator', get('operator'));
   set('r_vehicle', get('vehicle'));
   set('r_product', get('product'));
-  set('r_qty', qty.toFixed(2));
+  set('r_density', get('density'));
+  set('r_nozzle', get('nozzle'));
+  set('r_mode', get('mode'));
   set('r_rate', rate.toFixed(2));
   set('r_amount', amount);
-  set('r_mode', get('mode'));
-  set('r_operator', get('operator'));
+  set('r_qty', qty.toFixed(2));
 }
+
+window.onload = updateReceipt;
 
 function downloadPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({
     orientation: "portrait",
     unit: "mm",
-    format: [58, 120]
+    format: [58, 140]
   });
 
-  let content = document.getElementById("receiptPreview").innerText;
+  const content = document.getElementById("receiptPreview").innerText;
   doc.setFont("Courier", "normal");
   doc.setFontSize(8);
   doc.text(content, 4, 10);
-  doc.save("receipt_58mm.pdf");
+  doc.save("vikas_receipt.pdf");
 }
 </script>
 
