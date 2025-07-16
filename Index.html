@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Petrol Pump Receipt Dashboard</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: monospace;
+      background: #f2f2f2;
+      display: flex;
+      height: 100vh;
+    }
+    .left, .right {
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .left {
+      width: 50%;
+      background: #fff;
+      border-right: 1px solid #ccc;
+    }
+    .right {
+      width: 50%;
+      background: #fff;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin: 10px 0;
+      font-size: 14px;
+    }
+    button {
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 20px;
+      width: 100%;
+    }
+    .receipt {
+      width: 240px;
+      background: #fff;
+      padding: 10px;
+      font-size: 11px;
+      line-height: 1.4;
+      border: 1px dashed #000;
+    }
+    .center {
+      text-align: center;
+    }
+    hr {
+      border: none;
+      border-top: 1px dashed #000;
+      margin: 10px 0;
+    }
+    label {
+      font-weight: bold;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="left">
+  <h2>Receipt Entry</h2>
+  <label>Invoice No</label>
+  <input id="invoice" oninput="updateReceipt()" />
+  <label>Date</label>
+  <input id="date" oninput="updateReceipt()" />
+  <label>Time</label>
+  <input id="time" oninput="updateReceipt()" />
+  <label>Nozzle No</label>
+  <input id="nozzle" oninput="updateReceipt()" />
+  <label>Vehicle No</label>
+  <input id="vehicle" oninput="updateReceipt()" />
+  <label>Product</label>
+  <select id="product" onchange="updateReceipt()">
+    <option>PETROL</option>
+    <option>DIESEL</option>
+  </select>
+  <label>Quantity (Ltr)</label>
+  <input id="qty" type="number" oninput="updateReceipt()" />
+  <label>Rate (₹/Ltr)</label>
+  <input id="rate" type="number" oninput="updateReceipt()" />
+  <label>Payment Mode</label>
+  <input id="mode" oninput="updateReceipt()" />
+  <label>Operator Name</label>
+  <input id="operator" oninput="updateReceipt()" />
+  <button onclick="downloadPDF()">💾 Download PDF</button>
+</div>
+
+<div class="right">
+  <h2>Live Receipt Preview</h2>
+  <div class="receipt" id="receiptPreview">
+    <div class="center">
+      <strong>BHARAT PETROLEUM</strong><br/>
+      OM SAI SERVICE STATION<br/>
+      NH-8, NEAR TOLL PLAZA, AJMER<br/>
+      GSTIN: 08ABCDE1234F1Z5
+    </div>
+    <hr>
+    Invoice : <span id="r_invoice"></span><br/>
+    Date    : <span id="r_date"></span><br/>
+    Time    : <span id="r_time"></span><br/>
+    Nozzle  : <span id="r_nozzle"></span><br/>
+    Vehicle : <span id="r_vehicle"></span><br/>
+    Product : <span id="r_product"></span><br/>
+    Qty     : <span id="r_qty"></span> Ltr<br/>
+    Rate    : ₹<span id="r_rate"></span><br/>
+    Amount  : ₹<span id="r_amount"></span><br/>
+    Mode    : <span id="r_mode"></span><br/>
+    Operator: <span id="r_operator"></span><br/>
+    <hr>
+    <div class="center">Thank you! Visit Again.</div>
+  </div>
+</div>
+
+<script>
+function updateReceipt() {
+  const get = id => document.getElementById(id).value || '';
+  const set = (id, val) => document.getElementById(id).innerText = val;
+
+  const qty = parseFloat(get('qty')) || 0;
+  const rate = parseFloat(get('rate')) || 0;
+  const amount = (qty * rate).toFixed(2);
+
+  set('r_invoice', get('invoice'));
+  set('r_date', get('date'));
+  set('r_time', get('time'));
+  set('r_nozzle', get('nozzle'));
+  set('r_vehicle', get('vehicle'));
+  set('r_product', get('product'));
+  set('r_qty', qty.toFixed(2));
+  set('r_rate', rate.toFixed(2));
+  set('r_amount', amount);
+  set('r_mode', get('mode'));
+  set('r_operator', get('operator'));
+}
+
+async function downloadPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({
+    orientation: "portrait",
+    unit: "mm",
+    format: [58, 120]
+  });
+
+  let content = document.getElementById("receiptPreview").innerText;
+  doc.setFont("Courier", "normal");
+  doc.setFontSize(8);
+  doc.text(content, 4, 10);
+  doc.save("receipt_58mm.pdf");
+}
+</script>
+
+</body>
+</html>
