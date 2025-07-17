@@ -1,109 +1,97 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Petrol Pump Receipt</title>
-  <script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     body {
-      font-family: monospace;
-      background: #f8f8f8;
-      margin: 0;
+      font-family: sans-serif;
+      background: #f0f0f0;
       padding: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
-    h1 {
-      font-family: sans-serif;
-      color: #333;
-      margin-bottom: 20px;
-    }
-    .wrapper {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-      justify-content: center;
-      width: 100%;
-      max-width: 900px;
-    }
+
     .form-section, .preview-section {
-      background: #fff;
+      background: white;
       padding: 20px;
+      margin: 10px;
       border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      flex: 1 1 300px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 300px;
     }
+
     label {
-      display: block;
-      margin-top: 10px;
       font-weight: bold;
-      font-family: sans-serif;
+      margin-top: 10px;
+      display: block;
     }
+
     input {
       width: 100%;
-      padding: 6px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      padding: 5px;
+      margin-bottom: 5px;
       font-family: monospace;
     }
+
     #receipt {
-      width: 260px;
-      background: #fff;
-      padding: 10px;
-      border: 1px dashed #000;
-      white-space: pre;
+      width: 240px;
+      font-family: monospace;
       font-size: 13px;
+      white-space: pre;
+      border: 1px dashed #000;
+      padding: 10px;
+      background: white;
     }
-    .center {
-      text-align: center;
-      font-weight: bold;
-    }
+
     .btn {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background: #000;
-      color: #fff;
+      margin-top: 15px;
+      padding: 10px;
+      background: black;
+      color: white;
       border: none;
-      border-radius: 5px;
       cursor: pointer;
-      font-family: sans-serif;
     }
   </style>
 </head>
 <body>
-  <h1>⛽ Receipt Generator</h1>
-  <div class="wrapper">
-    <div class="form-section">
-      <label>Bill No.</label><input id="billNo" value="247675-ORGNL" />
-      <label>Transac. ID.</label><input id="txnId" value="00014886" />
-      <label>Vehicle No.</label><input id="vehicleNo" value="1210724953" />
-      <label>Date</label><input id="date" value="05/08/22" />
-      <label>FP. ID</label><input id="fpId" value="2" />
-      <label>Nozzle No.</label><input id="nozzleNo" value="2" />
-      <label>Fuel Type</label><input id="fuelType" value="DIESEL" />
-      <label>Density</label><input id="density" value="825.5kg/m3" />
-      <label>Preset val.</label><input id="presetVal" value="Rs.3000" />
-      <label>Rate</label><input id="rate" value="Rs.94.44" />
-      <label>Sale</label><input id="sale" value="Rs.2828.47" />
-      <label>Volume</label><input id="volume" value="29.95L" />
-      <button class="btn" onclick="downloadPDF()">⬇️ Download PDF</button>
-    </div><div class="preview-section">
-  <div id="receipt"></div>
-</div>
 
-  </div>  <script>
-    const inputs = [
-      "billNo", "txnId", "vehicleNo", "date", "fpId", "nozzleNo",
-      "fuelType", "density", "presetVal", "rate", "sale", "volume"
-    ];
+  <div class="form-section">
+    <label>Bill No.</label><input id="billNo" value="247675-ORGNL">
+    <label>Transaction ID</label><input id="txnId" value="00014886">
+    <label>Vehicle No.</label><input id="vehicleNo" value="1210724953">
+    <label>Date</label><input id="date" value="05/08/22">
+    <label>FP ID</label><input id="fpId" value="2">
+    <label>Nozzle No.</label><input id="nozzleNo" value="2">
+    <label>Fuel Type</label><input id="fuelType" value="DIESEL">
+    <label>Density</label><input id="density" value="825.5kg/m3">
+    <label>Preset Val.</label><input id="presetVal" value="Rs.3000">
+    <label>Rate</label><input id="rate" value="Rs.94.44">
+    <label>Sale</label><input id="sale" value="Rs.2828.47">
+    <label>Volume</label><input id="volume" value="29.95L">
 
-    function updateReceipt() {
-      const data = {};
-      inputs.forEach(id => data[id] = document.getElementById(id).value);
-      document.getElementById("receipt").innerHTML =
-`         [LOGO PLACEHOLDER]
+    <button class="btn" onclick="downloadPDF()">⬇️ Download PDF</button>
+  </div>
+
+  <div class="preview-section">
+    <div id="receipt"></div>
+  </div>
+
+<script>
+  const inputs = [
+    "billNo", "txnId", "vehicleNo", "date", "fpId", "nozzleNo",
+    "fuelType", "density", "presetVal", "rate", "sale", "volume"
+  ];
+
+  function updateReceipt() {
+    const data = {};
+    inputs.forEach(id => data[id] = document.getElementById(id).value);
+
+    document.getElementById("receipt").innerText = `
+[LOGO]
 M/S VIKAS PETROLEUM
 BANDRA CHOK
 MUZFFARPUR
@@ -123,19 +111,26 @@ Sale           :${data.sale}
 Volume.        :${data.volume}
 THANKS
 VISIT AGAIN`;
-    }
+  }
 
-    function downloadPDF() {
-      const receipt = document.getElementById("receipt");
-      html2pdf().set({
-        margin: 0,
-        filename: 'receipt.pdf',
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'mm', format: [58, 200], orientation: 'portrait' }
-      }).from(receipt).save();
-    }
+  function downloadPDF() {
+    const element = document.getElementById("receipt");
+    const opt = {
+      margin:       0,
+      filename:     'receipt.pdf',
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 3 },
+      jsPDF:        { unit: 'mm', format: [58, 200], orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(element).save();
+  }
 
-    inputs.forEach(id => document.getElementById(id).addEventListener("input", updateReceipt));
-    window.onload = updateReceipt;
-  </script></body>
+  inputs.forEach(id => {
+    document.getElementById(id).addEventListener("input", updateReceipt);
+  });
+
+  window.onload = updateReceipt;
+</script>
+
+</body>
 </html>
